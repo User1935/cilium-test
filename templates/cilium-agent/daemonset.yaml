@@ -47,7 +47,6 @@ spec:
         # cilium to be a critical pod in the cluster, which ensures cilium
         # gets priority scheduling.
         # https://kubernetes.io/docs/tasks/administer-cluster/guaranteed-scheduling-critical-addon-pods/
-        scheduler.alpha.kubernetes.io/critical-pod: ""
         {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -70,7 +69,7 @@ spec:
       {{- end }}
       containers:
       - name: cilium-agent
-        image: {{ include "cilium.image" .Values.image | quote }}
+        image: "{{ template "system_default_registry" . }}{{ include "cilium.image" .Values.image }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         {{- if .Values.sleepAfterInit }}
         command:
@@ -321,7 +320,7 @@ spec:
         {{- end }}
       {{- if .Values.monitor.enabled }}
       - name: cilium-monitor
-        image: {{ include "cilium.image" .Values.image | quote }}
+        image: "{{ template "system_default_registry" . }}{{ include "cilium.image" .Values.image }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         command: ["cilium"]
         args:
@@ -348,7 +347,7 @@ spec:
       # Required to mount cgroup2 filesystem on the underlying Kubernetes node.
       # We use nsenter command with host's cgroup and mount namespaces enabled.
       - name: mount-cgroup
-        image: {{ include "cilium.image" .Values.image | quote }}
+        image: "{{ template "system_default_registry" . }}{{ include "cilium.image" .Values.image }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
         - name: CGROUP_ROOT
@@ -377,7 +376,7 @@ spec:
       {{- end }}
       {{- if and .Values.nodeinit.enabled .Values.nodeinit.bootstrapFile }}
       - name: wait-for-node-init
-        image: {{ include "cilium.image" .Values.image | quote }}
+        image: "{{ template "system_default_registry" . }}{{ include "cilium.image" .Values.image }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         command:
         - sh
@@ -390,9 +389,11 @@ spec:
         volumeMounts:
         - name: cilium-bootstrap-file
           mountPath: {{ .Values.nodeinit.bootstrapFile }}
+        securityContext:
+          privileged: true
       {{- end }}
       - name: clean-cilium-state
-        image: {{ include "cilium.image" .Values.image | quote }}
+        image: "{{ template "system_default_registry" . }}{{ include "cilium.image" .Values.image }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         command:
         - /init-container.sh

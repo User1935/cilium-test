@@ -68,21 +68,21 @@ annotations:
       description: |
         Cilium Egress NAT Policy provides control over the way that traffic
         leaves the cluster and which source addresses to use for that traffic.
+  fleet.cattle.io/bundle-id: rke2
 apiVersion: v2
 appVersion: 1.11.2
 description: eBPF-based Networking, Security, and Observability
-home: https://cilium.io/
-icon: https://cdn.jsdelivr.net/gh/cilium/cilium@v1.11.2/Documentation/images/logo-solo.svg
+home: https://docs.rke2.io/
 keywords:
-- BPF
-- eBPF
-- Kubernetes
-- Networking
-- Security
-- Observability
-- Troubleshooting
-kubeVersion: '>= 1.16.0-0'
-name: cilium
+  - BPF
+  - eBPF
+  - Kubernetes
+  - Networking
+  - Security
+  - Observability
+  - Troubleshooting
+kubeVersion: '>= v1.23.6'
+name: rke2-cilium
 sources:
-- https://github.com/cilium/cilium
-version: 1.11.2
+  - https://github.com/rancher/rke2-charts
+version: 1.11.203
